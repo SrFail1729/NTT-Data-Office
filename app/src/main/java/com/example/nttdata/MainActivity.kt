@@ -25,6 +25,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,6 +49,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
 
+            // 🔵 Lista mutable de citas
+
+            val citas = remember { mutableStateListOf<CitaData>() }
+
+
             NttDataTheme {
                 NavHost(
                     navController = navController,
@@ -58,7 +65,7 @@ class MainActivity : ComponentActivity() {
                         PantallaLogin(
                             onLoginSuccess = {
                                 navController.navigate("pantallaInicio3") {
-                                    popUpTo("login") { inclusive = true }
+                                    //popUpTo("login") { inclusive = true }
                                 }
                             }
                         )
@@ -67,12 +74,13 @@ class MainActivity : ComponentActivity() {
                     /** HOME SCREEN **/
                     composable("pantallaInicio3") {
                         PantallaInicio3(
+                            citas = citas,   // ← aquí pasamos la lista
                             onReservaClick = {
                                 navController.navigate("reservaPuestos7")
-                            }
+                            },
+                            onBack = { navController.popBackStack() }
                         )
                     }
-
                     /** RESERVA SCREEN **/
                     composable("reservaPuestos7") {
                         ReservaPuestos7(
