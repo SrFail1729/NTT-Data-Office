@@ -44,47 +44,59 @@ import com.example.nttdata.ui.theme.NttDataTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge() // Habilita el diseño de borde a borde (detrás de la barra de estado)
 
         setContent {
+            // Controlador de navegación principal
             val navController = rememberNavController()
 
-            // 🔵 Lista mutable de citas
-
+            // ----------------------------------------------------------------
+            // ESTADO COMPARTIDO (State Hoisting)
+            // ----------------------------------------------------------------
+            // Creamos la lista de citas aquí para que sobreviva a la navegación
+            // y pueda ser compartida entre pantallas (Inicio y Reserva)
             val citas = remember { mutableStateListOf<CitaData>() }
 
 
             NttDataTheme {
+                // ----------------------------------------------------------------
+                // GRAFO DE NAVEGACIÓN
+                // ----------------------------------------------------------------
                 NavHost(
                     navController = navController,
-                    startDestination = "login"
+                    startDestination = "login" // Pantalla inicial
                 ) {
 
-                    /** LOGIN SCREEN **/
+                    // --- PANTALLA DE LOGIN ---
                     composable("login") {
                         PantallaLogin(
                             onLoginSuccess = {
+                                // Al loguearse, navegamos a la pantalla de inicio
                                 navController.navigate("pantallaInicio3") {
-                                    //popUpTo("login") { inclusive = true }
+                                    // Opcional: Eliminar login del backstack para no volver con "atrás"
+                                    // popUpTo("login") { inclusive = true }
                                 }
                             }
                         )
                     }
 
-                    /** HOME SCREEN **/
+                    // --- PANTALLA DE INICIO ---
                     composable("pantallaInicio3") {
                         PantallaInicio3(
-                            citas = citas,   // ← aquí pasamos la lista
+                            citas = citas,   // Pasamos la lista compartida
                             onReservaClick = {
+                                // Navegamos a la pantalla de reserva
                                 navController.navigate("reservaPuestos7")
                             },
                             onBack = { navController.popBackStack() }
                         )
                     }
-                    /** RESERVA SCREEN **/
+
+                    // --- PANTALLA DE RESERVA ---
                     composable("reservaPuestos7") {
                         ReservaPuestos7(
-                            onBack = { navController.popBackStack() }
+                            citas = citas, // Pasamos la misma lista para poder añadir citas
+                            onBack = { navController.popBackStack() } // Volver atrás
                         )
                     }
                 }
