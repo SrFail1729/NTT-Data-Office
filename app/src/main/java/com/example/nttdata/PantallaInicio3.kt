@@ -6,13 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -20,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -43,49 +41,55 @@ fun PantallaInicio3(
     onReservaClick: () -> Unit = {}, // Callback para navegar a la pantalla de reserva
     onBack: () -> Unit = {} // Callback para volver atrás (si fuera necesario)
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(WindowInsets.safeDrawing.asPaddingValues()) // Respetamos los insets del sistema (barra de estado, etc.)
-            .background(Color.White)
+    Scaffold(
+        topBar = {
+            HeaderUsuario(onBack) // Cabecera con información del usuario
+        },
+        bottomBar = {
+            BarraInferior()  // Barra inferior
+        },
+        modifier = modifier.fillMaxSize()
+            .padding(bottom = 35.dp, top = 35.dp)
+    ) { innerPadding ->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(innerPadding) //  Ajusta el contenido
+                .background(Color.White)
 
-    ) {
-        // Cabecera con información del usuario
-        HeaderUsuario(onBack)
-
-        Spacer(Modifier.height(24.dp))
-
-        // ----------------------------------------------------------------
-        // LISTA DE CITAS (LazyColumn)
-        // ----------------------------------------------------------------
-        // Usamos LazyColumn para que la lista sea eficiente y scrolleable
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f) // Ocupa todo el espacio disponible verticalmente
         ) {
-            // Iteramos sobre la lista de citas
-            items(citas.size) { index ->
-                CitaItem(citas[index]) // Renderizamos cada item
-                Spacer(Modifier.height(1.dp))
+
+            Spacer(Modifier.height(24.dp))
+
+            // ----------------------------------------------------------------
+            // LISTA DE CITAS (LazyColumn)
+            // ----------------------------------------------------------------
+            // Usamos LazyColumn para que la lista sea eficiente y scrolleable
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f) // Ocupa todo el espacio disponible verticalmente
+            ) {
+                // Iteramos sobre la lista de citas
+                items(citas.size) { index ->
+                    CitaItem(citas[index]) // Renderizamos cada item
+                    Spacer(Modifier.height(1.dp))
+                }
             }
+
+
+            Spacer(Modifier.height(40.dp))
+
+            // ----------------------------------------------------------------
+            // BOTONES DE ACCIÓN (Imágenes como botones)
+            // ----------------------------------------------------------------
+            // Componente que contiene las imágenes para navegar a reservar
+            GaleriaImagenes(
+                onReservaClick = onReservaClick
+            )
+
+            Spacer(Modifier.height(24.dp))
         }
-
-
-        Spacer(Modifier.height(40.dp))
-
-        // ----------------------------------------------------------------
-        // BOTONES DE ACCIÓN (Imágenes como botones)
-        // ----------------------------------------------------------------
-        // Componente que contiene las imágenes para navegar a reservar
-        GaleriaImagenes(
-            onReservaClick = onReservaClick
-        )
-
-        Spacer(Modifier.height(24.dp))
-
-        // Barra inferior decorativa
-        BarraInferior()
     }
 }
 
@@ -202,7 +206,9 @@ fun GaleriaImagenes(onReservaClick: () -> Unit) {
             Image(
                 painter = painterResource(id = R.drawable.reservar_puesto),
                 contentDescription = "Reservar Puesto",
-                modifier = Modifier.size(150.dp),
+                modifier = Modifier
+                    .size(150.dp)
+                    .background(Color.White),
                 contentScale = ContentScale.Crop
             )
         }
@@ -216,7 +222,9 @@ fun GaleriaImagenes(onReservaClick: () -> Unit) {
             Image(
                 painter = painterResource(id = R.drawable.reservar_sala),
                 contentDescription = "Reservar Sala",
-                modifier = Modifier.size(150.dp),
+                modifier = Modifier
+                    .size(150.dp)
+                    .background(Color.White),
                 contentScale = ContentScale.Crop
             )
         }

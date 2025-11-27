@@ -24,6 +24,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Button
@@ -34,6 +35,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
@@ -63,6 +65,7 @@ import java.util.Locale
 @Composable
 fun ReservaPuestos7(
     citas: SnapshotStateList<CitaData>, // Lista mutable de citas compartida
+    modifier: Modifier = Modifier,
     onBack: () -> Unit = {} // Callback para navegar hacia atrás
 ) {
     // ----------------------------------------------------------------
@@ -97,148 +100,152 @@ fun ReservaPuestos7(
         String.format("%02d:%02d", timePickerStateFin.hour, timePickerStateFin.minute)
 
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(WindowInsets.safeDrawing.asPaddingValues())
-            .background(Color.White)
-    ) {
-
-        // Cabecera con botón de atrás y título
-        HeaderReserva(onBack)
-
-        Spacer(Modifier.height(16.dp))
-
-        // Componente visual para mostrar la oficina seleccionada (fijo por ahora)
-        OficinaSelector(
-            "Valencia",
-            "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/vjlbfl27_expires_30_days.png"
-        )
-
-        Spacer(Modifier.height(24.dp))
-
-        // ----------------------------------------------------------------
-        // SECCIÓN DE BOTONES SELECTORES
-        // ----------------------------------------------------------------
-
-        // 1. Selector de Fecha
-        Row(
+    Scaffold(
+        topBar = {
+            HeaderReserva(onBack)  // Cabecera con botón de atrás y título
+        },
+        bottomBar = {
+            BarraInferiorReserva()
+        },
+        modifier = modifier.fillMaxSize()
+            .padding(bottom = 35.dp, top = 35.dp)
+    ) { innerPadding ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(Color.White)
         ) {
-            Text("Fecha:", fontSize = 18.sp, color = Color.Black, fontWeight = FontWeight.Bold)
 
-            // Botón que abre el diálogo de fecha
-            OutlinedButton(
-                onClick = { showDatePicker = true }, // Al hacer clic, mostramos el diálogo
-                shape = RoundedCornerShape(10.dp),
-                border = BorderStroke(1.dp, Color(0xFF070F26))
-            ) {
-                Icon(Icons.Default.DateRange, contentDescription = null, tint = Color(0xFF070F26))
-                Spacer(Modifier.width(8.dp))
-                Text(selectedDate, color = Color(0xFF070F26))
-            }
-        }
+            Spacer(Modifier.height(10.dp))
 
-        Spacer(Modifier.height(16.dp))
-
-        // 2. Selector de Hora Inicio
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                "Hora Inicio:",
-                fontSize = 18.sp,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
+            // Componente visual para mostrar la oficina seleccionada (fijo por ahora)
+            OficinaSelector(
+                "Valencia",
+                "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/vjlbfl27_expires_30_days.png"
             )
 
-            // Botón que abre el diálogo de hora de inicio
-            OutlinedButton(
-                onClick = { showTimePickerInicio = true },
-                shape = RoundedCornerShape(10.dp),
-                border = BorderStroke(1.dp, Color(0xFF070F26))
+            Spacer(Modifier.height(10.dp))
+
+            // ----------------------------------------------------------------
+            // SECCIÓN DE BOTONES SELECTORES
+            // ----------------------------------------------------------------
+
+            // 1. Selector de Fecha
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Icon(Icons.Default.Schedule, contentDescription = null, tint = Color(0xFF070F26))
-                Spacer(Modifier.width(8.dp))
-                Text(selectedTimeInicio, color = Color(0xFF070F26))
-            }
-        }
+                Text("Fecha:", fontSize = 18.sp, color = Color.Black, fontWeight = FontWeight.Bold)
 
-        Spacer(Modifier.height(16.dp))
-
-        // 3. Selector de Hora Fin
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text("Hora Fin:", fontSize = 18.sp, color = Color.Black, fontWeight = FontWeight.Bold)
-
-            // Botón que abre el diálogo de hora de fin
-            OutlinedButton(
-                onClick = { showTimePickerFin = true },
-                shape = RoundedCornerShape(10.dp),
-                border = BorderStroke(1.dp, Color(0xFF070F26))
-            ) {
-                Icon(Icons.Default.Schedule, contentDescription = null, tint = Color(0xFF070F26))
-                Spacer(Modifier.width(8.dp))
-                Text(selectedTimeFin, color = Color(0xFF070F26))
-            }
-        }
-
-        Spacer(Modifier.height(24.dp))
-
-        // ----------------------------------------------------------------
-        // BOTÓN DE CONFIRMACIÓN
-        // ----------------------------------------------------------------
-        Button(
-            onClick = {
-                // Validamos que se haya seleccionado una fecha antes de guardar
-                if (datePickerState.selectedDateMillis != null) {
-                    // Añadimos la nueva cita a la lista compartida
-                    citas.add(
-                        CitaData(
-                            fecha = selectedDate,
-                            detalle = "Oficina Valencia\n$selectedTimeInicio - $selectedTimeFin",
-                            iconUrl = "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/06qx6vzm_expires_30_days.png"
-                        )
+                // Botón que abre el diálogo de fecha
+                OutlinedButton(
+                    onClick = { showDatePicker = true }, // Al hacer clic, mostramos el diálogo
+                    shape = RoundedCornerShape(10.dp),
+                    border = BorderStroke(1.dp, Color(0xFF070F26))
+                ) {
+                    Icon(
+                        Icons.Default.DateRange,
+                        contentDescription = null,
+                        tint = Color(0xFF070F26)
                     )
-                    // Navegamos hacia atrás (volvemos a la pantalla de inicio)
-                    onBack()
+                    Spacer(Modifier.width(8.dp))
+                    Text(selectedDate, color = Color(0xFF070F26))
                 }
-            },
-            shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF070F26)),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
-                .height(50.dp)
-        ) {
-            Text(
-                "Confirmar Reserva",
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
+            }
+
+            Spacer(Modifier.height(10.dp))
+
+            // 2. Selector de Hora Inicio
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    "Hora:",
+                    fontSize = 18.sp,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+
+                // Botón que abre el diálogo de hora de inicio
+                OutlinedButton(
+                    onClick = { showTimePickerInicio = true },
+                    shape = RoundedCornerShape(10.dp),
+                    border = BorderStroke(1.dp, Color(0xFF070F26))
+                ) {
+                    Icon(
+                        Icons.Default.Schedule,
+                        contentDescription = null,
+                        tint = Color(0xFF070F26)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(selectedTimeInicio, color = Color(0xFF070F26))
+                }
+
+                // Botón que abre el diálogo de hora de fin
+                OutlinedButton(
+                    onClick = { showTimePickerFin = true },
+                    shape = RoundedCornerShape(10.dp),
+                    border = BorderStroke(1.dp, Color(0xFF070F26))
+                ) {
+                    Icon(
+                        Icons.Default.Schedule,
+                        contentDescription = null,
+                        tint = Color(0xFF070F26)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(selectedTimeFin, color = Color(0xFF070F26))
+                }
+            }
+
+            Spacer(Modifier.height(10.dp))
+
+            // ----------------------------------------------------------------
+            // BOTÓN DE CONFIRMACIÓN
+            // ----------------------------------------------------------------
+            Button(
+                onClick = {
+                    // Validamos que se haya seleccionado una fecha antes de guardar
+                    if (datePickerState.selectedDateMillis != null) {
+                        // Añadimos la nueva cita a la lista compartida
+                        citas.add(
+                            CitaData(
+                                fecha = selectedDate,
+                                detalle = "Oficina Valencia\n$selectedTimeInicio - $selectedTimeFin",
+                                iconUrl = "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/06qx6vzm_expires_30_days.png"
+                            )
+                        )
+                        // Navegamos hacia atrás (volvemos a la pantalla de inicio)
+                        onBack()
+                    }
+                },
+                shape = RoundedCornerShape(10.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF070F26)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .height(45.dp)
+            ) {
+                Text(
+                    "Confirmar Reserva",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(Modifier.height(10.dp))
+
+            // Plano visual de la oficina (decorativo)
+            PlanoOficina()
         }
-
-        Spacer(Modifier.height(16.dp))
-
-        // Plano visual de la oficina (decorativo)
-        PlanoOficina()
-
-        Spacer(Modifier.height(24.dp))
-        BarraInferiorReserva()
     }
 
     // ----------------------------------------------------------------
@@ -359,19 +366,21 @@ fun HeaderReserva(onBack: () -> Unit) {
         Modifier
             .fillMaxWidth()
             .background(Color(0xFF070F26))
-            .padding(16.dp),
+            .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Text(
-            "<",
-            color = Color.White,
-            fontSize = 25.sp,
-            modifier = Modifier
-                .clickable { onBack() }
-                .padding(start = 15.dp, end = 16.dp)
-                .size(25.dp)
-        )
+        androidx.compose.material3.IconButton(
+            onClick = onBack,
+            modifier = Modifier.padding(start = 2.dp)
+        ) {
+            androidx.compose.material3.Icon(
+                imageVector = androidx.compose.material.icons.Icons.Default.ArrowBack,
+                contentDescription = "Volver",
+                tint = Color.White
+            )
+        }
+        Spacer(modifier = Modifier.width(36.dp))
         Text("Reserva Puestos", color = Color.White, fontSize = 22.sp)
     }
 }
@@ -383,37 +392,29 @@ fun OficinaSelector(nombre: String, iconUrl: String) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 44.dp, end = 29.dp)
+            .padding(start = 44.dp)
     ) {
         Text(
             "Oficina:",
             color = Color.Black,
-            fontSize = 26.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(end = 16.dp)
         )
-        Row(
+        Button(
+            onClick = { /*TODO*/ },
+            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF070F26)),
             modifier = Modifier
-                .clip(RoundedCornerShape(12.dp))
-                .background(Color(0xFF070F26))
-                .weight(1f)
-                .padding(vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .height(45.dp)
         ) {
             Text(
-                "    $nombre",
+                "Valencia",
                 color = Color.White,
                 fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 33.dp)
-            )
-            AsyncImage(
-                model = iconUrl,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(end = 15.dp)
+                fontWeight = FontWeight.Bold
             )
         }
     }
@@ -425,29 +426,33 @@ fun PlanoOficina() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(500.dp)
+            .height(370.dp)
             .padding(22.dp)
     ) {
         // Imagen de fondo
-        AsyncImage(
-            model = "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/0dkjijlz_expires_30_days.png",
+        Image(
+            painter = painterResource(id = R.drawable.carpeta),
             contentDescription = null,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.size(400.dp)
         )
 
         // Cuadrícula de mesas
         LazyVerticalGrid(
             columns = GridCells.Fixed(2), // número de columnas
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(
+                start = 5.dp,
+                top = 35.dp, // margen superior
+                end = 5.dp,
+                bottom = 5.dp),
+            horizontalArrangement = Arrangement.spacedBy(1.dp),
+            verticalArrangement = Arrangement.spacedBy(1.dp),
         ) {
             items(6) { // número de imágenes
                 Image(
                     painter = painterResource(id = R.drawable.mesa),
                     contentDescription = null,
-                    modifier = Modifier.size(120.dp)
+                    modifier = Modifier.size(95.dp)
                 )
             }
         }
@@ -462,28 +467,25 @@ fun BarraInferiorReserva() {
             .background(Color(0xFF070F26))
             .padding(vertical = 13.dp, horizontal = 33.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween  // ← Clave
     ) {
-        AsyncImage(
-            model = "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/69bgb9nb_expires_30_days.png",
-            contentDescription = null,
-            modifier = Modifier.size(35.dp)
+        CoilImageWrapper(
+            "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/ibjhmitd_expires_30_days.png",
+            Modifier.size(35.dp)
         )
-        Spacer(modifier = Modifier.weight(1f))
-        AsyncImage(
-            model = "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/er6acdl3_expires_30_days.png",
-            contentDescription = null,
-            modifier = Modifier
-                .size(35.dp)
-                .padding(end = 110.dp)
+
+        CoilImageWrapper(
+            "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/4vnd53eu_expires_30_days.png",
+            Modifier.size(35.dp)
         )
-        AsyncImage(
-            model = "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/wy6fvds1_expires_30_days.png",
-            contentDescription = null,
-            modifier = Modifier.size(35.dp)
+
+        CoilImageWrapper(
+            "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/m87eafkb_expires_30_days.png",
+            Modifier.size(35.dp)
         )
     }
 }
+
 
 
 @Preview(showBackground = true)
@@ -505,3 +507,4 @@ fun ReservaPuestos7Preview() {
         onBack = {}
     )
 }
+
