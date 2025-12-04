@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,21 +36,24 @@ import coil.compose.AsyncImage
 
 
 @Composable
-fun PantallaInicio3(
+fun PantallaInicio(
     citas: SnapshotStateList<CitaData>, // Lista mutable de citas que recibimos desde MainActivity
     modifier: Modifier = Modifier,
     onReservaClick: () -> Unit = {}, // Callback para navegar a la pantalla de reserva
-    onBack: () -> Unit = {} // Callback para volver atrás (si fuera necesario)
+    onBack: () -> Unit = {}, // Callback para volver atrás (si fuera necesario)
+    onMenuClick: () -> Unit = {}
 ) {
     Scaffold(
         topBar = {
             HeaderUsuario(onBack) // Cabecera con información del usuario
         },
         bottomBar = {
-            BarraInferior()  // Barra inferior
+            BarraInferiorComun(
+                onMenuClick = onMenuClick,
+                onBack = onBack
+            ) // Barra inferior
         },
         modifier = modifier.fillMaxSize()
-            .padding(bottom = 35.dp, top = 35.dp)
     ) { innerPadding ->
         Column(
             modifier = modifier
@@ -99,7 +103,8 @@ fun HeaderUsuario(onBack: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF070F26)), // Color de fondo azul oscuro corporativo
+            .background(Color(0xFF070F26)) // Color de fondo azul oscuro corporativo
+            .statusBarsPadding(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Botón de retroceso estándar
@@ -231,34 +236,6 @@ fun GaleriaImagenes(onReservaClick: () -> Unit) {
     }
 }
 
-
-@Composable
-fun BarraInferior() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(0xFF070F26))
-            .padding(vertical = 13.dp, horizontal = 33.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween  // ← Clave
-    ) {
-        CoilImageWrapper(
-            "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/ibjhmitd_expires_30_days.png",
-            Modifier.size(35.dp)
-        )
-
-        CoilImageWrapper(
-            "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/4vnd53eu_expires_30_days.png",
-            Modifier.size(35.dp)
-        )
-
-        CoilImageWrapper(
-            "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/m87eafkb_expires_30_days.png",
-            Modifier.size(35.dp)
-        )
-    }
-}
-
 @Composable
 fun CoilImageWrapper(imageUrl: String, modifier: Modifier = Modifier) {
     AsyncImage(
@@ -271,7 +248,7 @@ fun CoilImageWrapper(imageUrl: String, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun PantallaInicio3Preview() {
+fun PantallaInicioPreview() {
     // Lista de ejemplo para el preview (estática)
     val citasDemo = listOf(
         CitaData(
@@ -291,7 +268,7 @@ fun PantallaInicio3Preview() {
         addAll(citasDemo)
     }
 
-    PantallaInicio3(
+    PantallaInicio(
         citas = citasState,
         onReservaClick = {},
         onBack = {}

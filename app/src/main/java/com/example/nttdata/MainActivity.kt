@@ -3,7 +3,6 @@ package com.example.nttdata
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,7 +43,6 @@ import com.example.nttdata.ui.theme.NttDataTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge() // Habilita el diseño de borde a borde (detrás de la barra de estado)
 
         setContent {
             // Controlador de navegación principal
@@ -66,13 +64,22 @@ class MainActivity : ComponentActivity() {
                     navController = navController,
                     startDestination = "login" // Pantalla inicial
                 ) {
+                    // --- PANTALLA DE BARRAINFERIOR ---
+                    composable("BarraInferior") {
+                        BarraInferiorComun(
+                            onMenuClick = {
+                                navController.navigate("Menu") // Navegamos a la pantalla Menu
+                            },
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
 
                     // --- PANTALLA DE LOGIN ---
                     composable("login") {
                         PantallaLogin(
                             onLoginSuccess = {
                                 // Al loguearse, navegamos a la pantalla de inicio
-                                navController.navigate("pantallaInicio3") {
+                                navController.navigate("pantallaInicio") {
                                     // Opcional: Eliminar login del backstack para no volver con "atrás"
                                     // popUpTo("login") { inclusive = true }
                                 }
@@ -81,21 +88,34 @@ class MainActivity : ComponentActivity() {
                     }
 
                     // --- PANTALLA DE INICIO ---
-                    composable("pantallaInicio3") {
-                        PantallaInicio3(
+                    composable("pantallaInicio") {
+                        PantallaInicio(
                             citas = citas,   // Pasamos la lista compartida
                             onReservaClick = {
                                 // Navegamos a la pantalla de reserva
-                                navController.navigate("reservaPuestos7")
+                                navController.navigate("reservaPuestos")
                             },
-                            onBack = { navController.popBackStack() }
+                            onBack = { navController.popBackStack() },
+                            onMenuClick = {
+                                navController.navigate("Menu") // Navegamos a la pantalla Menu
+                            }
                         )
                     }
 
                     // --- PANTALLA DE RESERVA ---
-                    composable("reservaPuestos7") {
-                        ReservaPuestos7(
+                    composable("reservaPuestos") {
+                        ReservaPuestos(
                             citas = citas, // Pasamos la misma lista para poder añadir citas
+                            onBack = { navController.popBackStack() }, // Volver atrás
+                            onMenuClick = {
+                                navController.navigate("Menu") // Navegamos a la pantalla Menu
+                            }
+                        )
+                    }
+
+                    // --- PANTALLA DE MENU ---
+                    composable("Menu") {
+                        Menu(
                             onBack = { navController.popBackStack() } // Volver atrás
                         )
                     }

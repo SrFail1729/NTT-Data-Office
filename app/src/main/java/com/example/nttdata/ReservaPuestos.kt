@@ -4,21 +4,18 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -31,10 +28,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -49,28 +50,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReservaPuestos7(
+fun ReservaPuestos(
     citas: SnapshotStateList<CitaData>, // Lista mutable de citas compartida
     modifier: Modifier = Modifier,
-    onBack: () -> Unit = {} // Callback para navegar hacia atrás
+    onBack: () -> Unit = {}, // Callback para navegar hacia atrás
+    onMenuClick: () -> Unit = {}
 ) {
     // ----------------------------------------------------------------
     // ESTADOS PARA LOS SELECTORES (Date Picker y Time Pickers)
     // ----------------------------------------------------------------
+    var selectedCity by remember { mutableStateOf("Castellón") }
 
     // Estado para controlar la visibilidad del diálogo de selección de FECHA
     var showDatePicker by remember { mutableStateOf(false) }
@@ -105,10 +107,12 @@ fun ReservaPuestos7(
             HeaderReserva(onBack)  // Cabecera con botón de atrás y título
         },
         bottomBar = {
-            BarraInferiorReserva()
+            BarraInferiorComun(
+                onMenuClick = onMenuClick,
+                onBack = onBack
+            )
         },
         modifier = modifier.fillMaxSize()
-            .padding(bottom = 35.dp, top = 35.dp)
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -121,9 +125,10 @@ fun ReservaPuestos7(
 
             // Componente visual para mostrar la oficina seleccionada (fijo por ahora)
             OficinaSelector(
-                "Valencia",
-                "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/vjlbfl27_expires_30_days.png"
+                selectedCity = selectedCity,
+                onCitySelected = { selectedCity = it }
             )
+
 
             Spacer(Modifier.height(10.dp))
 
@@ -218,7 +223,7 @@ fun ReservaPuestos7(
                         citas.add(
                             CitaData(
                                 fecha = selectedDate,
-                                detalle = "Oficina Valencia\n$selectedTimeInicio - $selectedTimeFin",
+                                detalle = "Oficina $selectedCity\n$selectedTimeInicio - $selectedTimeFin",
                                 iconUrl = "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/06qx6vzm_expires_30_days.png"
                             )
                         )
@@ -366,7 +371,7 @@ fun HeaderReserva(onBack: () -> Unit) {
         Modifier
             .fillMaxWidth()
             .background(Color(0xFF070F26))
-            .padding(10.dp),
+            .statusBarsPadding(),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -385,9 +390,16 @@ fun HeaderReserva(onBack: () -> Unit) {
     }
 }
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OficinaSelector(nombre: String, iconUrl: String) {
+fun OficinaSelector(
+    selectedCity: String,
+    onCitySelected: (String) -> Unit
+) {
+    val ciudades = listOf("Castellón", "Valencia", "Madrid", "Barcelona", "Sevilla")
+
+    var expanded by remember { mutableStateOf(false) }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -401,24 +413,46 @@ fun OficinaSelector(nombre: String, iconUrl: String) {
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(end = 16.dp)
         )
-        Button(
-            onClick = { /*TODO*/ },
-            shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF070F26)),
+
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp)
-                .height(45.dp)
         ) {
-            Text(
-                "Valencia",
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+            OutlinedTextField(
+                readOnly = true,
+                value = selectedCity,
+                onValueChange = {},
+                label = { Text("Ciudad") },
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF070F26),
+                    unfocusedBorderColor = Color(0xFF070F26)
+                )
             )
+
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                ciudades.forEach { ciudad ->
+                    DropdownMenuItem(
+                        text = { Text(ciudad) },
+                        onClick = {
+                            onCitySelected(ciudad)
+                            expanded = false
+                        }
+                    )
+                }
+            }
         }
     }
 }
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -444,7 +478,8 @@ fun PlanoOficina() {
                 start = 5.dp,
                 top = 35.dp, // margen superior
                 end = 5.dp,
-                bottom = 5.dp),
+                bottom = 5.dp
+            ),
             horizontalArrangement = Arrangement.spacedBy(1.dp),
             verticalArrangement = Arrangement.spacedBy(1.dp),
         ) {
@@ -459,38 +494,10 @@ fun PlanoOficina() {
     }
 }
 
-@Composable
-fun BarraInferiorReserva() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(0xFF070F26))
-            .padding(vertical = 13.dp, horizontal = 33.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween  // ← Clave
-    ) {
-        CoilImageWrapper(
-            "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/ibjhmitd_expires_30_days.png",
-            Modifier.size(35.dp)
-        )
-
-        CoilImageWrapper(
-            "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/4vnd53eu_expires_30_days.png",
-            Modifier.size(35.dp)
-        )
-
-        CoilImageWrapper(
-            "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/m87eafkb_expires_30_days.png",
-            Modifier.size(35.dp)
-        )
-    }
-}
-
-
 
 @Preview(showBackground = true)
 @Composable
-fun ReservaPuestos7Preview() {
+fun ReservaPuestosPreview() {
     // 🔵 Creamos una lista de ejemplo para el preview
     val citasDemo = androidx.compose.runtime.snapshots.SnapshotStateList<CitaData>().apply {
         add(
@@ -502,9 +509,8 @@ fun ReservaPuestos7Preview() {
         )
     }
 
-    ReservaPuestos7(
+    ReservaPuestos(
         citas = citasDemo,
         onBack = {}
     )
 }
-
