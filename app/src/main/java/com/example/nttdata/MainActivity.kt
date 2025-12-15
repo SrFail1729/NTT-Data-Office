@@ -24,8 +24,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -47,14 +46,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             // Controlador de navegación principal
             val navController = rememberNavController()
-
-            // ----------------------------------------------------------------
-            // ESTADO COMPARTIDO (State Hoisting)
-            // ----------------------------------------------------------------
-            // Creamos la lista de citas aquí para que sobreviva a la navegación
-            // y pueda ser compartida entre pantallas (Inicio y Reserva)
-            val citas = remember { mutableStateListOf<CitaData>() }
-
+            val citasViewModel: CitasViewModel = viewModel()
 
             NttDataTheme {
                 // ----------------------------------------------------------------
@@ -90,7 +82,7 @@ class MainActivity : ComponentActivity() {
                     // --- PANTALLA DE INICIO ---
                     composable("pantallaInicio") {
                         PantallaInicio(
-                            citas = citas,   // Pasamos la lista compartida
+                            viewModel = citasViewModel,   // Pasamos la lista compartida
                             onReservaPuestoClick = {
                                 // Navegamos a la pantalla de reserva
                                 navController.navigate("reservaPuestos")
@@ -109,7 +101,7 @@ class MainActivity : ComponentActivity() {
                     // --- PANTALLA DE RESERVA PUESTO---
                     composable("reservaPuestos") {
                         ReservaPuestos(
-                            citas = citas, // Pasamos la misma lista para poder añadir citas
+                            viewModel = citasViewModel, // Pasamos la misma lista para poder añadir citas
                             onBack = { navController.popBackStack() }, // Volver atrás
                             onMenuClick = {
                                 navController.navigate("Menu") // Navegamos a la pantalla Menu
@@ -118,7 +110,7 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("reservaSalas") {
                         ReservaSalas(
-                            citas = citas, // Pasamos la misma lista para poder añadir citas
+                            viewModel = citasViewModel, // Pasamos la misma lista para poder añadir citas
                             onBack = { navController.popBackStack() }, // Volver atrás
                             onMenuClick = {
                                 navController.navigate("Menu") // Navegamos a la pantalla Menu

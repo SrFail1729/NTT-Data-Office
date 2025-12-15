@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.ArrowBack
@@ -21,7 +22,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,7 +29,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -37,7 +36,7 @@ import coil.compose.AsyncImage
 
 @Composable
 fun PantallaInicio(
-    citas: SnapshotStateList<CitaData>, // Lista mutable de citas que recibimos desde MainActivity
+    viewModel: CitasViewModel, // Lista mutable de citas que recibimos desde MainActivity
     modifier: Modifier = Modifier,
     onReservaSalaClick: () -> Unit = {}, // Callback para navegar a la pantalla de reserva de salas
     onReservaPuestoClick: () -> Unit = {}, // Callback para navegar a la pantalla de reserva de puestos
@@ -72,10 +71,11 @@ fun PantallaInicio(
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-                // Iteramos sobre la lista de citas
-                items(citas.size) { index ->
-                    CitaItem(citas[index]) // Renderizamos cada item
-                    Spacer(Modifier.height(1.dp))
+                items(viewModel.citas) { cita ->
+                    CitaItem(
+                        cita = cita,
+                        onDelete = { viewModel.eliminarCita(it) }
+                    )
                 }
             }
             Spacer(Modifier.height(40.dp))
@@ -137,7 +137,10 @@ fun HeaderUsuario(onBack: () -> Unit) {
 data class CitaData(val fecha: String, val detalle: String, val iconUrl: String)
 
 @Composable
-fun CitaItem(cita: CitaData) {
+fun CitaItem(
+    cita: CitaData,
+    onDelete: (CitaData) -> Unit
+) {
     // Tarjeta visual para cada cita
     Column(
         modifier = Modifier
@@ -172,7 +175,7 @@ fun CitaItem(cita: CitaData) {
 
             // Botón para cancelar (elimina la cita)
             OutlinedButton(
-                onClick = { println("Cancelar cita: ${cita.fecha}") },
+                onClick = { onDelete(cita) },
                 colors = ButtonDefaults.outlinedButtonColors(containerColor = Color(0xFF070F26)),
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier.height(38.dp)
@@ -214,7 +217,7 @@ fun GaleriaImagenes(onReservaPuestoClick: () -> Unit, onReservaSalaClick: () -> 
 
         // Tarjeta interactiva para "Reservar Sala" (sin implementación aún)
         androidx.compose.material3.Card(
-            onClick =  onReservaSalaClick, // Ejecuta la navegación al hacer clic
+            onClick = onReservaSalaClick, // Ejecuta la navegación al hacer clic
             shape = RoundedCornerShape(16.dp),
             elevation = androidx.compose.material3.CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
@@ -237,35 +240,5 @@ fun CoilImageWrapper(imageUrl: String, modifier: Modifier = Modifier) {
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PantallaInicioPreview() {
-    // Lista de ejemplo para el preview (estática)
-    val citasDemo = listOf(
-        CitaData(
-            "25 Septiembre, Miércoles",
-            "Oficina Castellón\n18:00 - 18:30",
-            "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/06qx6vzm_expires_30_days.png"
-        ),
-        CitaData(
-            "27 Septiembre, Viernes",
-            "Oficina Castellón\n18:30 - 19:00",
-            "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/0wyvh1nh_expires_30_days.png"
-        )
-    )
-
-    // Convertimos la lista estática a SnapshotStateList solo para que compile
-    val citasState = androidx.compose.runtime.snapshots.SnapshotStateList<CitaData>().apply {
-        addAll(citasDemo)
-    }
-
-    PantallaInicio(
-        citas = citasState,
-        onReservaPuestoClick = {},
-        onReservaSalaClick = {},
-        onBack = {}
     )
 }
