@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReservaPuestos(
+fun ReservaSalas(
     citas: SnapshotStateList<CitaData>, // Lista mutable de citas compartida
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {}, // Callback para navegar hacia atrás
@@ -137,7 +137,7 @@ fun ReservaPuestos(
             Spacer(Modifier.height(10.dp))
 
             // Plano visual de la oficina (decorativo)
-            PlanoOficina()
+            PlanoSalas()
         }
     }
 
@@ -149,14 +149,9 @@ fun ReservaPuestos(
     DateTimeSelectionDialogs(state = dateTimeState)
 }
 
-
-
-
-
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PlanoOficina() {
+fun PlanoSalas() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -175,7 +170,6 @@ fun PlanoOficina() {
 
 @Preview(showBackground = true)
 @Composable
-fun ReservaPuestosPreview() {
-
-    ReservaPuestos(citas = SnapshotStateList())
+fun ReservaSalasPreview() {
+    ReservaSalas(citas = SnapshotStateList())
 }

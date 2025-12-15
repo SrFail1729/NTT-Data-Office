@@ -39,7 +39,8 @@ import coil.compose.AsyncImage
 fun PantallaInicio(
     citas: SnapshotStateList<CitaData>, // Lista mutable de citas que recibimos desde MainActivity
     modifier: Modifier = Modifier,
-    onReservaClick: () -> Unit = {}, // Callback para navegar a la pantalla de reserva
+    onReservaSalaClick: () -> Unit = {}, // Callback para navegar a la pantalla de reserva de salas
+    onReservaPuestoClick: () -> Unit = {}, // Callback para navegar a la pantalla de reserva de puestos
     onBack: () -> Unit = {}, // Callback para volver atrás (si fuera necesario)
     onMenuClick: () -> Unit = {}
 ) {
@@ -65,14 +66,11 @@ fun PantallaInicio(
 
             Spacer(Modifier.height(24.dp))
 
-            // ----------------------------------------------------------------
-            // LISTA DE CITAS (LazyColumn)
-            // ----------------------------------------------------------------
             // Usamos LazyColumn para que la lista sea eficiente y scrolleable
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f) // Ocupa todo el espacio disponible verticalmente
+                    .weight(1f)
             ) {
                 // Iteramos sobre la lista de citas
                 items(citas.size) { index ->
@@ -80,16 +78,12 @@ fun PantallaInicio(
                     Spacer(Modifier.height(1.dp))
                 }
             }
-
-
             Spacer(Modifier.height(40.dp))
 
-            // ----------------------------------------------------------------
-            // BOTONES DE ACCIÓN (Imágenes como botones)
-            // ----------------------------------------------------------------
             // Componente que contiene las imágenes para navegar a reservar
             GaleriaImagenes(
-                onReservaClick = onReservaClick
+                onReservaPuestoClick = onReservaPuestoClick,
+                onReservaSalaClick = onReservaSalaClick
             )
 
             Spacer(Modifier.height(24.dp))
@@ -176,7 +170,7 @@ fun CitaItem(cita: CitaData) {
         ) {
             Text(cita.detalle, color = Color(0xFF070F26))
 
-            // Botón para cancelar la cita (solo imprime por consola por ahora)
+            // Botón para cancelar (elimina la cita)
             OutlinedButton(
                 onClick = { println("Cancelar cita: ${cita.fecha}") },
                 colors = ButtonDefaults.outlinedButtonColors(containerColor = Color(0xFF070F26)),
@@ -195,7 +189,7 @@ fun CitaItem(cita: CitaData) {
 }
 
 @Composable
-fun GaleriaImagenes(onReservaClick: () -> Unit) {
+fun GaleriaImagenes(onReservaPuestoClick: () -> Unit, onReservaSalaClick: () -> Unit) {
 
     Row(
         modifier = Modifier
@@ -204,7 +198,7 @@ fun GaleriaImagenes(onReservaClick: () -> Unit) {
     ) {
         // Tarjeta interactiva para "Reservar Puesto"
         androidx.compose.material3.Card(
-            onClick = onReservaClick, // Ejecuta la navegación al hacer clic
+            onClick = onReservaPuestoClick, // Ejecuta la navegación al hacer clic
             shape = RoundedCornerShape(16.dp),
             elevation = androidx.compose.material3.CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
@@ -220,7 +214,7 @@ fun GaleriaImagenes(onReservaClick: () -> Unit) {
 
         // Tarjeta interactiva para "Reservar Sala" (sin implementación aún)
         androidx.compose.material3.Card(
-            onClick = { /* TODO: Implementar reserva sala */ },
+            onClick =  onReservaSalaClick, // Ejecuta la navegación al hacer clic
             shape = RoundedCornerShape(16.dp),
             elevation = androidx.compose.material3.CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
@@ -270,7 +264,8 @@ fun PantallaInicioPreview() {
 
     PantallaInicio(
         citas = citasState,
-        onReservaClick = {},
+        onReservaPuestoClick = {},
+        onReservaSalaClick = {},
         onBack = {}
     )
 }

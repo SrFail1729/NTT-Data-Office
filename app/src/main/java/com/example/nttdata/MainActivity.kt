@@ -91,7 +91,11 @@ class MainActivity : ComponentActivity() {
                     composable("pantallaInicio") {
                         PantallaInicio(
                             citas = citas,   // Pasamos la lista compartida
-                            onReservaClick = {
+                            onReservaPuestoClick = {
+                                // Navegamos a la pantalla de reserva
+                                navController.navigate("reservaPuestos")
+                            },
+                            onReservaSalaClick = {
                                 // Navegamos a la pantalla de reserva
                                 navController.navigate("reservaPuestos")
                             },
@@ -102,9 +106,18 @@ class MainActivity : ComponentActivity() {
                         )
                     }
 
-                    // --- PANTALLA DE RESERVA ---
+                    // --- PANTALLA DE RESERVA PUESTO---
                     composable("reservaPuestos") {
                         ReservaPuestos(
+                            citas = citas, // Pasamos la misma lista para poder añadir citas
+                            onBack = { navController.popBackStack() }, // Volver atrás
+                            onMenuClick = {
+                                navController.navigate("Menu") // Navegamos a la pantalla Menu
+                            }
+                        )
+                    }
+                    composable("reservaSalas") {
+                        ReservaSalas(
                             citas = citas, // Pasamos la misma lista para poder añadir citas
                             onBack = { navController.popBackStack() }, // Volver atrás
                             onMenuClick = {
