@@ -36,29 +36,29 @@ import coil.compose.AsyncImage
 
 @Composable
 fun PantallaInicio(
-    viewModel: CitasViewModel, // Lista mutable de citas que recibimos desde MainActivity
+    viewModel: CitasViewModel,
     modifier: Modifier = Modifier,
-    onReservaSalaClick: () -> Unit = {}, // Callback para navegar a la pantalla de reserva de salas
-    onReservaPuestoClick: () -> Unit = {}, // Callback para navegar a la pantalla de reserva de puestos
-    onBack: () -> Unit = {}, // Callback para volver atrás (si fuera necesario)
+    onReservaSalaClick: () -> Unit = {},
+    onReservaPuestoClick: () -> Unit = {},
+    onBack: () -> Unit = {},
     onMenuClick: () -> Unit = {}
 ) {
     Scaffold(
         topBar = {
-            HeaderUsuario(onBack) // Cabecera con información del usuario
+            HeaderUsuario(onBack)
         },
         bottomBar = {
             BarraInferiorComun(
                 onMenuClick = onMenuClick,
                 onBack = onBack
-            ) // Barra inferior
+            )
         },
         modifier = modifier.fillMaxSize()
     ) { innerPadding ->
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(innerPadding) //  Ajusta el contenido
+                .padding(innerPadding)
                 .background(Color.White)
 
         ) {
@@ -97,7 +97,7 @@ fun HeaderUsuario(onBack: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF070F26)) // Color de fondo azul oscuro corporativo
+            .background(Color(0xFF070F26))
             .statusBarsPadding(),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -201,7 +201,7 @@ fun GaleriaImagenes(onReservaPuestoClick: () -> Unit, onReservaSalaClick: () -> 
     ) {
         // Tarjeta interactiva para "Reservar Puesto"
         androidx.compose.material3.Card(
-            onClick = onReservaPuestoClick, // Ejecuta la navegación al hacer clic
+            onClick = onReservaPuestoClick,
             shape = RoundedCornerShape(16.dp),
             elevation = androidx.compose.material3.CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
@@ -215,9 +215,9 @@ fun GaleriaImagenes(onReservaPuestoClick: () -> Unit, onReservaSalaClick: () -> 
             )
         }
 
-        // Tarjeta interactiva para "Reservar Sala" (sin implementación aún)
+        // Tarjeta interactiva para "Reservar Sala"
         androidx.compose.material3.Card(
-            onClick = onReservaSalaClick, // Ejecuta la navegación al hacer clic
+            onClick = onReservaSalaClick,
             shape = RoundedCornerShape(16.dp),
             elevation = androidx.compose.material3.CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {

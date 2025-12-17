@@ -44,19 +44,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            // Controlador de navegación principal
             val navController = rememberNavController()
             val citasViewModel: CitasViewModel = viewModel()
 
             NttDataTheme {
-                // ----------------------------------------------------------------
-                // GRAFO DE NAVEGACIÓN
-                // ----------------------------------------------------------------
                 NavHost(
                     navController = navController,
                     startDestination = "login" // Pantalla inicial
                 ) {
-                    // --- PANTALLA DE BARRAINFERIOR ---
                     composable("BarraInferior") {
                         BarraInferiorComun(
                             onMenuClick = {
@@ -65,8 +60,6 @@ class MainActivity : ComponentActivity() {
                             onBack = { navController.popBackStack() }
                         )
                     }
-
-                    // --- PANTALLA DE LOGIN ---
                     composable("login") {
                         PantallaLogin(
                             onLoginSuccess = {
@@ -78,8 +71,6 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
-
-                    // --- PANTALLA DE INICIO ---
                     composable("pantallaInicio") {
                         PantallaInicio(
                             viewModel = citasViewModel,   // Pasamos la lista compartida
@@ -97,8 +88,6 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
-
-                    // --- PANTALLA DE RESERVA PUESTO---
                     composable("reservaPuestos") {
                         ReservaPuestos(
                             viewModel = citasViewModel, // Pasamos la misma lista para poder añadir citas
@@ -117,8 +106,6 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
-
-                    // --- PANTALLA DE MENU ---
                     composable("Menu") {
                         Menu(
                             onBack = { navController.popBackStack() } // Volver atrás
@@ -132,123 +119,5 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun PantallaLogin(onLoginSuccess: () -> Unit) {
-    Greeting(onLoginSuccess = onLoginSuccess)
-}
-
-
-@Composable
-fun Greeting(
-    modifier: Modifier = Modifier,
-    onLoginSuccess: () -> Unit = {}
-) {
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .verticalScroll(rememberScrollState())
-            .padding(WindowInsets.safeDrawing.asPaddingValues())  // <-- ESTE
-            .padding(horizontal = 24.dp, vertical = 48.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
-            AsyncImage(
-                model = "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/iyyl20fd_expires_30_days.png",
-                contentDescription = null,
-                modifier = Modifier.size(111.dp)
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Text(
-                text = "NTT DATA Office",
-                color = Color.Black,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(48.dp))
-
-            Column(modifier = Modifier.fillMaxWidth()) {
-
-                Text(
-                    "Usuario",
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
-                )
-                Divider(color = Color.Black, thickness = 1.dp)
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Text(
-                    "Contraseña",
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 16.dp, bottom = 8.dp),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    AsyncImage(
-                        model = "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/m43ql7uo_expires_30_days.png",
-                        contentDescription = null,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-                Divider(color = Color.Black, thickness = 1.dp)
-            }
-
-            Spacer(modifier = Modifier.height(48.dp))
-
-            Button(
-                onClick = onLoginSuccess,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF070F26)),
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(55.dp)
-            ) {
-                Text(
-                    text = "Inicio de sesión",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text(
-                text = "¿Has olvidado tu contraseña?",
-                color = Color(0xFF0073BD),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        Text(
-            text = "Si no tienes cuenta, solicítala",
-            color = Color.Black,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top = 16.dp)
-        )
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    NttDataTheme {
-        Greeting()
-    }
+    Login(onLoginSuccess = onLoginSuccess)
 }

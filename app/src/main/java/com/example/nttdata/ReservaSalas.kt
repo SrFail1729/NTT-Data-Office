@@ -1,6 +1,6 @@
 package com.example.nttdata
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -32,22 +32,18 @@ import androidx.compose.ui.unit.sp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReservaSalas(
-    viewModel: CitasViewModel, // Lista mutable de citas compartida
+    viewModel: CitasViewModel,
     modifier: Modifier = Modifier,
-    onBack: () -> Unit = {}, // Callback para navegar hacia atrás
+    onBack: () -> Unit = {},
     onMenuClick: () -> Unit = {}
 ) {
-    // ----------------------------------------------------------------
-    // ESTADOS PARA LOS SELECTORES (Date Picker y Time Pickers)
-    // ----------------------------------------------------------------
     var selectedCity by remember { mutableStateOf("Castellón") }
 
-    // Usamos el estado compartido para la selección de fecha y hora
     val dateTimeState = rememberDateTimeSelectionState()
 
     Scaffold(
         topBar = {
-            HeaderReserva(onBack)  // Cabecera con botón de atrás y título
+            HeaderReserva(onBack, title = "Reserva Salas")
         },
         bottomBar = {
             BarraInferiorComun(
@@ -66,7 +62,6 @@ fun ReservaSalas(
 
             Spacer(Modifier.height(10.dp))
 
-            // Componente visual para mostrar la oficina seleccionada (fijo por ahora)
             OficinaSelector(
                 selectedCity = selectedCity,
                 onCitySelected = { selectedCity = it }
@@ -74,10 +69,6 @@ fun ReservaSalas(
 
 
             Spacer(Modifier.height(10.dp))
-
-            // ----------------------------------------------------------------
-            // SECCIÓN DE BOTONES SELECTORES
-            // ----------------------------------------------------------------
 
             // Usamos el componente compartido para los selectores
             DateTimeSelectors(state = dateTimeState)
@@ -128,7 +119,7 @@ fun ReservaSalas(
     DateTimeSelectionDialogs(state = dateTimeState)
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+
 @Composable
 fun PlanoSalas() {
     Box(
