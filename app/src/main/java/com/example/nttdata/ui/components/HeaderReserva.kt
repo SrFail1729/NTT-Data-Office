@@ -1,7 +1,6 @@
-package com.example.nttdata.components
+package com.example.nttdata.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,10 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.nttdata.R
 
 @Composable
-fun HeaderComun(
+fun HeaderReserva(
     onBack: () -> Unit,
     title: String = "Reserva Puestos"
 ) {
@@ -31,10 +29,8 @@ fun HeaderComun(
             .fillMaxWidth()
             .background(Color(0xFF070F26))
             .statusBarsPadding(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
+        verticalAlignment = Alignment.CenterVertically
     ) {
-
         IconButton(
             onClick = onBack,
             modifier = Modifier.padding(start = 2.dp)
@@ -45,16 +41,7 @@ fun HeaderComun(
                 tint = Color.White
             )
         }
-        Spacer(modifier = Modifier.width(18.dp))
-
-        AvatarUsuario(
-            R.drawable.imagen_generica,
-            tamanyo = 40.dp,
-            modifier = Modifier.padding(1.dp)
-        )
-
-        Spacer(modifier = Modifier.width(18.dp))
-
+        Spacer(modifier = Modifier.width(36.dp))
         Text(title, color = Color.White, fontSize = 22.sp)
     }
 }

@@ -1,4 +1,4 @@
-package com.example.nttdata
+package com.example.nttdata.ui.screens
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel

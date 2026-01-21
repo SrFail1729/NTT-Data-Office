@@ -1,4 +1,4 @@
-package com.example.nttdata
+package com.example.nttdata.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,8 +16,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,7 +37,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.nttdata.components.BarraInferiorComun
+import com.example.nttdata.R
+import com.example.nttdata.ui.components.BarraInferiorComun
 
 
 @Composable
@@ -103,12 +109,12 @@ fun HeaderUsuario(onBack: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Botón de retroceso estándar
-        androidx.compose.material3.IconButton(
+        IconButton(
             onClick = onBack,
             modifier = Modifier.padding(start = 8.dp)
         ) {
-            androidx.compose.material3.Icon(
-                imageVector = androidx.compose.material.icons.Icons.Default.ArrowBack,
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Volver",
                 tint = Color.White
             )
@@ -201,10 +207,10 @@ fun GaleriaImagenes(onReservaPuestoClick: () -> Unit, onReservaSalaClick: () -> 
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         // Tarjeta interactiva para "Reservar Puesto"
-        androidx.compose.material3.Card(
+        Card(
             onClick = onReservaPuestoClick,
             shape = RoundedCornerShape(16.dp),
-            elevation = androidx.compose.material3.CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.reservar_puesto),
@@ -217,10 +223,10 @@ fun GaleriaImagenes(onReservaPuestoClick: () -> Unit, onReservaSalaClick: () -> 
         }
 
         // Tarjeta interactiva para "Reservar Sala"
-        androidx.compose.material3.Card(
+        Card(
             onClick = onReservaSalaClick,
             shape = RoundedCornerShape(16.dp),
-            elevation = androidx.compose.material3.CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.reservar_sala),

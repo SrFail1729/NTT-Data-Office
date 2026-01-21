@@ -1,4 +1,4 @@
-package com.example.nttdata
+package com.example.nttdata.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,9 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.nttdata.components.BarraInferiorComun
-import com.example.nttdata.components.HeaderComun
-import com.example.nttdata.components.HeaderReserva
+import com.example.nttdata.ui.components.BarraInferiorComun
+import com.example.nttdata.ui.components.HeaderComun
 
 @Composable
 fun PerfilUsuario(

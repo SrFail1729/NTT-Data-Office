@@ -1,4 +1,4 @@
-package com.example.nttdata
+package com.example.nttdata.ui.screens
 
 
 import androidx.compose.foundation.Image
@@ -28,8 +28,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.nttdata.components.BarraInferiorComun
-import com.example.nttdata.components.HeaderReserva
+import com.example.nttdata.R
+import com.example.nttdata.ui.components.BarraInferiorComun
+import com.example.nttdata.ui.components.DateTimeSelectionDialogs
+import com.example.nttdata.ui.components.DateTimeSelectors
+import com.example.nttdata.ui.components.HeaderReserva
+import com.example.nttdata.ui.components.OficinaSelector
+import com.example.nttdata.ui.components.rememberDateTimeSelectionState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
