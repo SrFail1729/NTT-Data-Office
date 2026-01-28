@@ -3,6 +3,7 @@ package com.example.nttdata
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,19 +23,29 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.nttdata.components.BarraInferiorComun
+import com.example.nttdata.components.QrScanner
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PantallaInicio(
     viewModel: CitasViewModel,
@@ -44,6 +55,8 @@ fun PantallaInicio(
     onBack: () -> Unit = {},
     onMenuClick: () -> Unit = {}
 ) {
+    val uriHandler = LocalUriHandler.current
+    val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
     Scaffold(
         topBar = {
             HeaderUsuario(onBack)
@@ -63,6 +76,55 @@ fun PantallaInicio(
                 .background(Color.White)
 
         ) {
+            var qrResult by remember { mutableStateOf("Esperando código...") }
+
+            Spacer(Modifier.height(24.dp))
+
+            if (cameraPermissionState.status.isGranted){
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp) // <--- Tamaño fijo para que la lista respire
+                        .padding(16.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.Black) // Fondo negro mientras carga
+                ) {
+                    QrScanner(
+                        modifier = Modifier.fillMaxSize(),
+                        onQrDetected = { code ->
+                            if (code.startsWith("https")){
+                                uriHandler.openUri(code)
+                            }
+                        }
+                    )
+                }
+            }else{
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp)
+                        .background(Color.DarkGray, RoundedCornerShape(12.dp)),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("Necesitamos la cámara para leer el QR", color = Color.White)
+                    Spacer(Modifier.height(8.dp))
+                    androidx.compose.material3.Button(
+                        onClick = { cameraPermissionState.launchPermissionRequest() }
+                    ) {
+                        Text("Dar Permiso")
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = "Resultado QR: $qrResult",
+                modifier = Modifier.padding(horizontal = 16.dp),
+                fontWeight = FontWeight.Bold
+            )
 
             Spacer(Modifier.height(24.dp))
 
