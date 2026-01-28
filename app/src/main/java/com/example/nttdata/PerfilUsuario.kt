@@ -7,12 +7,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.nttdata.components.BarraInferiorComun
 import com.example.nttdata.components.HeaderComun
 import com.example.nttdata.components.HeaderReserva
+import com.example.nttdata.components.QrScanner
 
 @Composable
 fun PerfilUsuario(
@@ -21,7 +26,6 @@ fun PerfilUsuario(
     Column(modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
-
         Scaffold(
             topBar = {
                 HeaderComun(
@@ -40,15 +44,11 @@ fun PerfilUsuario(
                 .fillMaxSize()
                 .padding(innerPadding)) {
 
-                Row() {
-
-                }
 
             }
         }
 
     }
-
 
 }
 
