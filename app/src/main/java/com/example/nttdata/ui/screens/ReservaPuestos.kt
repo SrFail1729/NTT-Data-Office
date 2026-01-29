@@ -1,4 +1,4 @@
-package com.example.nttdata
+package com.example.nttdata.ui.theme.screens
 
 
 import androidx.compose.foundation.Image
@@ -28,12 +28,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.nttdata.components.BarraInferiorComun
-import com.example.nttdata.components.HeaderReserva
+import com.example.nttdata.CitasViewModel
+import com.example.nttdata.R
+import com.example.nttdata.ui.theme.components.BarraInferiorComun
+import com.example.nttdata.ui.theme.components.DateTimeSelectionDialogs
+import com.example.nttdata.ui.theme.components.DateTimeSelectors
+import com.example.nttdata.ui.theme.components.HeaderReserva
+import com.example.nttdata.ui.theme.components.rememberDateTimeSelectionState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReservaSalas(
+fun ReservaPuestos(
     viewModel: CitasViewModel,
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
@@ -45,7 +50,7 @@ fun ReservaSalas(
 
     Scaffold(
         topBar = {
-            HeaderReserva(onBack, title = "Reserva Salas")
+            HeaderReserva(onBack)
         },
         bottomBar = {
             BarraInferiorComun(
@@ -64,22 +69,19 @@ fun ReservaSalas(
 
             Spacer(Modifier.height(10.dp))
 
+            // Componente visual para mostrar la oficina seleccionada (fijo por ahora)
             OficinaSelector(
                 selectedCity = selectedCity,
                 onCitySelected = { selectedCity = it }
             )
 
-
             Spacer(Modifier.height(10.dp))
 
-            // Usamos el componente compartido para los selectores
             DateTimeSelectors(state = dateTimeState)
 
             Spacer(Modifier.height(10.dp))
 
-            // ----------------------------------------------------------------
             // BOTÓN DE CONFIRMACIÓN
-            // ----------------------------------------------------------------
             Button(
                 onClick = {
                     // Validamos que se haya seleccionado una fecha antes de guardar
@@ -114,7 +116,7 @@ fun ReservaSalas(
             Spacer(Modifier.height(10.dp))
 
             // Plano visual de la oficina (decorativo)
-            PlanoSalas()
+            PlanoOficina()
         }
     }
     // Usamos el componente compartido para los diálogos
@@ -122,8 +124,9 @@ fun ReservaSalas(
 }
 
 
+
 @Composable
-fun PlanoSalas() {
+fun PlanoOficina() {
     Box(
         modifier = Modifier
             .fillMaxWidth()

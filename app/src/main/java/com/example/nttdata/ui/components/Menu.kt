@@ -1,4 +1,4 @@
-package com.example.nttdata
+package com.example.nttdata.ui.theme.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -11,7 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.nttdata.components.BarraInferiorComun
+import com.example.nttdata.ui.theme.screens.CoilImageWrapper
 
 @Composable
 fun Menu(
@@ -66,12 +69,12 @@ fun HeaderUsuarioMenu(onBack: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Botón de retroceso estándar
-        androidx.compose.material3.IconButton(
+        IconButton(
             onClick = onBack,
             modifier = Modifier.padding(start = 8.dp)
         ) {
-            androidx.compose.material3.Icon(
-                imageVector = androidx.compose.material.icons.Icons.Default.ArrowBack,
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Volver",
                 tint = Color.White
             )

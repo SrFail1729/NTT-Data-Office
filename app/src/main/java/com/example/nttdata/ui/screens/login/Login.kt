@@ -1,4 +1,4 @@
-package com.example.nttdata
+package com.example.nttdata.ui.theme.screens.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

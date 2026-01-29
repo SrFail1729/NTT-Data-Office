@@ -1,4 +1,4 @@
-package com.example.nttdata.components
+package com.example.nttdata.ui.theme.components
 
 import android.widget.Toast
 import androidx.camera.core.ImageAnalysis.COORDINATE_SYSTEM_VIEW_REFERENCED

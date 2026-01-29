@@ -8,7 +8,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.nttdata.components.BarraInferiorComun
+import com.example.nttdata.ui.theme.components.BarraInferiorComun
+import com.example.nttdata.ui.theme.components.Menu
+import com.example.nttdata.ui.theme.screens.login.Login
+import com.example.nttdata.ui.theme.screens.PantallaInicio
+import com.example.nttdata.ui.theme.screens.ReservaPuestos
+import com.example.nttdata.ui.theme.screens.ReservaSalas
 import com.example.nttdata.ui.theme.NttDataTheme
 
 

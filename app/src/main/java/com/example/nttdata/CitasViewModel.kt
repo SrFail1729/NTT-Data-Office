@@ -2,6 +2,7 @@ package com.example.nttdata
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
+import com.example.nttdata.ui.theme.screens.CitaData
 
 class CitasViewModel : ViewModel() {
 

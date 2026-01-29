@@ -1,4 +1,4 @@
-package com.example.nttdata.components
+package com.example.nttdata.ui.theme.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size

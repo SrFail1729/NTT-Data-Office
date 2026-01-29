@@ -44,8 +44,9 @@ android {
 dependencies {
 
     implementation(libs.androidx.camera.mlkit.vision)
+
     // Camerax
-    val camerax_version = "1.3.0" // Usa la versión más reciente
+    val camerax_version = "1.3.0"
     implementation("androidx.camera:camera-camera2:$camerax_version")
     implementation("androidx.camera:camera-lifecycle:$camerax_version")
     implementation("androidx.camera:camera-view:$camerax_version")
@@ -54,7 +55,13 @@ dependencies {
     // ML Kit Barcode Scanning
     implementation("com.google.mlkit:barcode-scanning:17.2.0")
 
+    //Cosas para los permisos
     implementation("com.google.accompanist:accompanist-permissions:0.34.0")
+
+    //Gson y Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.google.code.gson:gson:2.10.1")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
