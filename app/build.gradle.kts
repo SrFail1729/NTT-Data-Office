@@ -44,6 +44,7 @@ android {
 dependencies {
 
     implementation(libs.androidx.camera.mlkit.vision)
+    implementation(libs.androidx.compose.ui.text)
 
     // Camerax
     val camerax_version = "1.3.0"

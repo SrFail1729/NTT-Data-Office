@@ -8,14 +8,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-private const val URL_API = "https://bfsjffx2qh.execute-api.us-east-1.amazonaws./"
+private const val URL_API = "https://mjfi1g2m16.execute-api.us-east-1.amazonaws.com"
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(GsonConverterFactory.create())
     .baseUrl(URL_API)
     .build()
 
 interface NttDataApiAuth{
-    @POST("login")
+    @POST("/login")
     suspend fun login(@Body request: LoginRequestDTO): Response<LoginResponseDTO>
 }
 

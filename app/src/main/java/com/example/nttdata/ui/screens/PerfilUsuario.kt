@@ -1,4 +1,4 @@
-package com.example.nttdata.ui.theme.screens
+package com.example.nttdata.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

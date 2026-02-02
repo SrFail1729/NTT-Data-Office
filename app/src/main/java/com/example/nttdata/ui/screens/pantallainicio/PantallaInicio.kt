@@ -30,6 +30,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,9 +45,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.nttdata.CitasViewModel
 import com.example.nttdata.R
+import com.example.nttdata.ui.screens.pantallainicio.PantallaPrincipalViewModel
 import com.example.nttdata.ui.theme.components.BarraInferiorComun
 import com.example.nttdata.ui.theme.components.QrScanner
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -59,16 +62,21 @@ import com.google.accompanist.permissions.rememberPermissionState
 fun PantallaInicio(
     viewModel: CitasViewModel,
     modifier: Modifier = Modifier,
+    principalViewModel: PantallaPrincipalViewModel = viewModel(),
     onReservaSalaClick: () -> Unit = {},
     onReservaPuestoClick: () -> Unit = {},
     onBack: () -> Unit = {},
     onMenuClick: () -> Unit = {}
 ) {
+    val uiState by principalViewModel.uiState.collectAsState()
     val uriHandler = LocalUriHandler.current
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
     Scaffold(
         topBar = {
-            HeaderUsuario(onBack)
+            HeaderUsuario(
+                nombreUsuario = uiState.usuario,
+                onBack
+            )
         },
         bottomBar = {
             BarraInferiorComun(
@@ -165,7 +173,10 @@ fun PantallaInicio(
 
 
 @Composable
-fun HeaderUsuario(onBack: () -> Unit) {
+fun HeaderUsuario(
+    nombreUsuario: String,
+    onBack: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -195,7 +206,7 @@ fun HeaderUsuario(onBack: () -> Unit) {
         )
         // Nombre del usuario
         Text(
-            "Usuario de prueba",
+            nombreUsuario,
             color = Color.White,
             fontSize = 21.sp,
             fontWeight = FontWeight.Bold,

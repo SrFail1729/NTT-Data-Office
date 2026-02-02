@@ -1,6 +1,8 @@
-package com.example.nttdata.ui.theme.screens.login
+package com.example.nttdata.ui.screens.login
 
 data class LoginUiState (
-    private val usuario: String = "",
-    private val contrasenya: String = ""
+    val usuario: String = "",
+    val contrasenya: String = "",
+    val mensaje: String = "",
+    val token: String = ""
 )

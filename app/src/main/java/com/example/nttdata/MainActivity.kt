@@ -9,8 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.nttdata.ui.theme.components.BarraInferiorComun
-import com.example.nttdata.ui.theme.components.Menu
-import com.example.nttdata.ui.theme.screens.login.Login
+import com.example.nttdata.ui.components.Menu
+import com.example.nttdata.ui.screens.login.Login
 import com.example.nttdata.ui.theme.screens.PantallaInicio
 import com.example.nttdata.ui.theme.screens.ReservaPuestos
 import com.example.nttdata.ui.theme.screens.ReservaSalas
