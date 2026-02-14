@@ -10,8 +10,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.nttdata.domain.model.UserRole
 import com.example.nttdata.ui.components.BarraInferiorComun
-import com.example.nttdata.ui.components.Menu
+import com.example.nttdata.ui.screens.DetalleCitaScreen
+import com.example.nttdata.ui.screens.Menu.Menu
 import com.example.nttdata.ui.screens.CitasViewModel
+import com.example.nttdata.ui.screens.CrearUsuarioScreen
+import com.example.nttdata.ui.screens.Menu.MenuUsuarioScreen
+import com.example.nttdata.ui.screens.Menu.ModificarDatosScreen
 import com.example.nttdata.ui.screens.OficinaSelection.CrearOficina
 import com.example.nttdata.ui.screens.OficinaSelection.OficinaViewModel
 import com.example.nttdata.ui.screens.ReservaPuestos.ReservaPuestos
@@ -67,6 +71,9 @@ class MainActivity : ComponentActivity() {
                                     // Navegamos a la pantalla de reserva
                                     navController.navigate("reservaSalas")
                                 },
+                                onReservaClick = { index ->
+                                    navController.navigate("detalleCita/$index")
+                                },
                                 onBack = { navController.popBackStack() },
                                 onMenuClick = {
                                     navController.navigate("Menu") // Navegamos a la pantalla Menu
@@ -94,23 +101,49 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("Menu") {
-                            // Pasamos si es admin o no
                             val isAdmin = citasViewModel.currentUserRole == UserRole.ADMIN
-                            Menu(
-                                onBack = { navController.popBackStack() },
-                                isAdmin = isAdmin,
-                                onAddUserClick = { navController.navigate("anadirUsuario") },
-                                onAddOfficeClick = { navController.navigate("crearOficina") }
-                            )
+                            if (isAdmin) {
+                                Menu(
+                                    onBack = { navController.popBackStack() },
+                                    isAdmin = true,
+                                    onAddUserClick = { navController.navigate("anadirUsuario") },
+                                    onAddOfficeClick = { navController.navigate("crearOficina") }
+                                )
+                            } else {
+                                MenuUsuarioScreen(
+                                    onBack = { navController.popBackStack() },
+                                    onEditProfile = { navController.navigate("modificarDatos") },
+                                    onContactAdmin = { /* TODO */ }
+                                )
+                            }
                         }
                         composable("anadirUsuario") {
-                           // Placeholder para añadir usuario
-                           androidx.compose.material3.Text("Pantalla Añadir Usuario (En construcción)")
+                            CrearUsuarioScreen(
+                                onBack = { navController.popBackStack() },
+                                onSubmit = { navController.popBackStack() }
+                            )
                         }
                         composable("crearOficina") {
                             // Aquí irá la nueva pantalla
                              CrearOficina(viewModel = oficinaViewModel, onBack = { navController.popBackStack() })
                             // androidx.compose.material3.Text("Pantalla Crear Oficina (En construcción)")
+                        }
+                        composable("modificarDatos") {
+                            ModificarDatosScreen(
+                                onBack = { navController.popBackStack() },
+                                onSubmit = { navController.popBackStack() }
+                            )
+                        }
+                        composable("detalleCita/{citaIndex}") { backStackEntry ->
+                            val citaIndex = backStackEntry.arguments?.getString("citaIndex")?.toIntOrNull()
+                            val cita = citaIndex?.let { citasViewModel.citas.getOrNull(it) }
+                            
+                            if (cita != null) {
+                                DetalleCitaScreen(
+                                    cita = cita,
+                                    onBack = { navController.popBackStack() }
+                                )
+                            }
                         }
                     }
                 }
