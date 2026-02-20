@@ -27,6 +27,7 @@ import com.example.nttdata.ui.screens.OficinaSelection.OficinaViewModel
 import com.example.nttdata.ui.screens.OficinaSelection.CrearOficina
 import com.example.nttdata.ui.theme.AppearanceViewModel
 import com.example.nttdata.ui.screens.Menu.AppearanceScreen
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 // Enum para gestionar las pantallas de la aplicación
@@ -53,25 +54,38 @@ fun App(securePreferences: SecurePreferences) {
     val gestorSesion = remember { DataGraph.gestorSesionPublico }
 
     val idUsuarioPersistente by gestorSesion.idUsuario.collectAsState(initial = null)
+
     // Estado de navegación
     var currentScreen by remember { mutableStateOf(Screen.LOGIN) }
     var userRole by remember { mutableStateOf<UserRole?>(null) }
     var selectedCitaIndex by remember { mutableStateOf<Int?>(null) }
+    var isAuthComprobacion by remember { mutableStateOf(false) }
 
     // ViewModels compartidos entre pantallas
     val citasViewModel = remember { CitasViewModel(
         sesion = gestorSesion,
         repository = DataGraph.citaRepository
     ) }
+
     val oficinaViewModel = remember { OficinaViewModel() }
     val appearanceViewModel = remember { AppearanceViewModel() }
 
+    LaunchedEffect(Unit) {
+        val idGuardado = gestorSesion.idUsuario.first()
+        val tieneToken = securePreferences.authToken != null
 
-    LaunchedEffect(idUsuarioPersistente) {
-        if (idUsuarioPersistente != null) {
+        if (idGuardado != null && tieneToken) {
             currentScreen = Screen.HOME
         } else {
             currentScreen = Screen.LOGIN
+        }
+        isAuthComprobacion = true
+    }
+
+    LaunchedEffect(idUsuarioPersistente) {
+        if (isAuthComprobacion && idUsuarioPersistente == null) {
+            currentScreen = Screen.LOGIN
+            userRole = null
         }
     }
 
@@ -107,8 +121,9 @@ fun App(securePreferences: SecurePreferences) {
                         // Volver al login (cerrar sesión)
                         scope.launch {
                             gestorSesion.logout()
-                            currentScreen = Screen.LOGIN
+                            securePreferences.logout()
                             userRole = null
+                            currentScreen = Screen.LOGIN
                         }
                     },
                     onMenuClick = { 
@@ -217,7 +232,14 @@ fun AppPreview() {
     val mockSecurePreferences = object : SecurePreferences {
         override var rememberMe: Boolean = false
         override var savedUsername: String? = null
+        override var authToken: String?
+            get() = TODO("Not yet implemented")
+            set(value) {}
+
         override fun clearUsername() {}
+        override fun logout() {
+            TODO("Not yet implemented")
+        }
     }
     App(securePreferences = mockSecurePreferences)
 }

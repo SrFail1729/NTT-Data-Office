@@ -50,12 +50,18 @@ class LoginViewModel(
                 onSuccess = { usuario ->
                     println("LoginViewModel: Login exitoso")
                     isLoading = false
+                    val gestorSesion = DataGraph.gestorSesionPublico
                     
                     // Manejar Recordar usuario de forma segura
                     securePreferences.rememberMe = rememberMe
                     if (rememberMe) {
                         securePreferences.savedUsername = username
+                        securePreferences.authToken = usuario.token
+                        viewModelScope.launch {
+                            gestorSesion.guardarSesion(usuario.id?.toLong(), usuario.token)
+                        }
                     } else {
+                        securePreferences.authToken = null
                         securePreferences.clearUsername()
                     }
 

@@ -32,4 +32,17 @@ class AndroidSecurePreferences(context: Context) : SecurePreferences {
     override fun clearUsername() {
         sharedPreferences.edit().remove(KEY_USERNAME).apply()
     }
+
+    override var authToken: String?
+        get() = sharedPreferences.getString("auth_token", null)
+        set(value) {
+            sharedPreferences.edit().putString("auth_token", value).apply()
+        }
+
+    override fun logout() {
+        sharedPreferences.edit()
+            .remove("auth_token")
+            .remove("saved_username")
+            .apply()
+    }
 }

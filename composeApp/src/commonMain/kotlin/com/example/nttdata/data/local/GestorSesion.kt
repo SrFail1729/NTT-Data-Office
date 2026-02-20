@@ -14,14 +14,16 @@ class GestorSesion(private val dataStore: DataStore<Preferences>) {
 
     val idUsuario: Flow<Long?> = dataStore.data.map { it[ID_USUARIO] }
     val token: Flow<String?> = dataStore.data.map { it[TOKEN] }
-    suspend fun guardarSesion(id: Long, token: String){
+    suspend fun guardarSesion(id: Long?, token: String){
         dataStore.edit { preferencias ->
-            preferencias[ID_USUARIO] = id
+            preferencias[ID_USUARIO] = id as Long
             preferencias[TOKEN] = token
         }
     }
 
     suspend fun logout(){
-        dataStore.edit { it.clear() }
+        dataStore.edit { preferences ->
+            preferences.clear()
+        }
     }
 }
