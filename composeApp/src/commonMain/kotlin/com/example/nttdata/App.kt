@@ -14,9 +14,10 @@ import coil3.compose.setSingletonImageLoaderFactory
 
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.nttdata.di.DataGraph
 import com.example.nttdata.domain.model.UserRole
 import com.example.nttdata.ui.screens.pantallainicio.PantallaInicio
-import com.example.nttdata.ui.screens.CitasViewModel
+import com.example.nttdata.ui.screens.pantallainicio.CitasViewModel
 import com.example.nttdata.ui.screens.ReservaPuestos.ReservaPuestos
 import com.example.nttdata.ui.screens.ReservaSalas.ReservaSalas
 import com.example.nttdata.ui.screens.Menu.MenuUsuarioScreen
@@ -26,6 +27,7 @@ import com.example.nttdata.ui.screens.OficinaSelection.OficinaViewModel
 import com.example.nttdata.ui.screens.OficinaSelection.CrearOficina
 import com.example.nttdata.ui.theme.AppearanceViewModel
 import com.example.nttdata.ui.screens.Menu.AppearanceScreen
+import kotlinx.coroutines.launch
 
 // Enum para gestionar las pantallas de la aplicación
 enum class Screen {
@@ -47,15 +49,31 @@ fun App(securePreferences: SecurePreferences) {
         ImageLoader.Builder(context).build()
     }
 
+    val scope = rememberCoroutineScope()
+    val gestorSesion = remember { DataGraph.gestorSesionPublico }
+
+    val idUsuarioPersistente by gestorSesion.idUsuario.collectAsState(initial = null)
     // Estado de navegación
     var currentScreen by remember { mutableStateOf(Screen.LOGIN) }
     var userRole by remember { mutableStateOf<UserRole?>(null) }
     var selectedCitaIndex by remember { mutableStateOf<Int?>(null) }
-    
+
     // ViewModels compartidos entre pantallas
-    val citasViewModel = remember { CitasViewModel() }
+    val citasViewModel = remember { CitasViewModel(
+        sesion = gestorSesion,
+        repository = DataGraph.citaRepository
+    ) }
     val oficinaViewModel = remember { OficinaViewModel() }
     val appearanceViewModel = remember { AppearanceViewModel() }
+
+
+    LaunchedEffect(idUsuarioPersistente) {
+        if (idUsuarioPersistente != null) {
+            currentScreen = Screen.HOME
+        } else {
+            currentScreen = Screen.LOGIN
+        }
+    }
 
     NttDataTheme(
         darkTheme = appearanceViewModel.isDarkMode,
@@ -87,8 +105,11 @@ fun App(securePreferences: SecurePreferences) {
                     },
                     onBack = { 
                         // Volver al login (cerrar sesión)
-                        currentScreen = Screen.LOGIN
-                        userRole = null
+                        scope.launch {
+                            gestorSesion.logout()
+                            currentScreen = Screen.LOGIN
+                            userRole = null
+                        }
                     },
                     onMenuClick = { 
                         currentScreen = Screen.MENU 

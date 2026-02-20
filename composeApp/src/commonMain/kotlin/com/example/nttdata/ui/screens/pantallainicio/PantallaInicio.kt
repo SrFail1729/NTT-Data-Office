@@ -39,10 +39,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.example.nttdata.domain.model.CitaData
+import com.example.nttdata.domain.model.Cita
 import com.example.nttdata.ui.components.BarraInferiorComun
 import com.example.nttdata.ui.components.CoilImageWrapper
-import com.example.nttdata.ui.screens.CitasViewModel
 import com.example.nttdata.ui.components.CameraPermissionEffect
 import com.example.nttdata.ui.components.QrScanner
 import nttdata.composeapp.generated.resources.Res
@@ -211,9 +210,9 @@ fun HeaderUsuario(onBack: () -> Unit) {
 
 @Composable
 fun CitaItem(
-    cita: CitaData,
-    onDelete: (CitaData) -> Unit,
-    onConfirm: (CitaData) -> Unit,
+    cita: Cita,
+    onDelete: (Cita) -> Unit,
+    onConfirm: (Cita) -> Unit,
     onClick: () -> Unit
 ) {
     // Tarjeta visual para cada cita
@@ -271,7 +270,7 @@ fun CitaItem(
 
                 Spacer(modifier = Modifier.width(50.dp))
 
-                if (!cita.isConfirmed) {
+                if (!cita.isConfirmado) {
                     // Botón para confirmar cita por QR
                     OutlinedButton(
                         onClick = { onConfirm(cita) },
@@ -355,8 +354,6 @@ fun GaleriaImagenes(onReservaPuestoClick: () -> Unit, onReservaSalaClick: () -> 
 @Composable
 fun PantallaInicioPreview() {
     com.example.nttdata.ui.theme.NttDataTheme {
-        PantallaInicio(
-            viewModel = CitasViewModel()
-        )
+
     }
 }

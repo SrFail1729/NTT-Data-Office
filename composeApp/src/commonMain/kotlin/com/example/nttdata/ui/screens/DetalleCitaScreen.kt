@@ -15,13 +15,13 @@ import androidx.compose.ui.text.font.FontWeight
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.nttdata.domain.model.CitaData
+import com.example.nttdata.domain.model.Cita
 import com.example.nttdata.ui.components.HeaderReserva
 import com.example.nttdata.ui.theme.NttDataTheme
 
 @Composable
 fun DetalleCitaScreen(
-    cita: CitaData,
+    cita: Cita,
     onBack: () -> Unit
 ) {
     var checkPantalla by remember { mutableStateOf(true) }
@@ -62,11 +62,11 @@ fun DetalleCitaScreen(
                     HorizontalDivider(color = Color.LightGray)
                     
                     InfoRow(label = "Fecha:", value = cita.fecha)
-                    InfoRow(label = "Detalle:", value = cita.detalle)
+                    //InfoRow(label = "Detalle:")
                     InfoRow(
                         label = "Estado:", 
-                        value = if (cita.isConfirmed) "Confirmada" else "Pendiente de Confirmar",
-                        valueColor = if (cita.isConfirmed) Color(0xFF2E7D32) else Color(0xFFD32F2F)
+                        value = if (cita.isConfirmado) "Confirmada" else "Pendiente de Confirmar",
+                        valueColor = if (cita.isConfirmado) Color(0xFF2E7D32) else Color(0xFFD32F2F)
                     )
                 }
             }
@@ -144,14 +144,6 @@ fun ResourceItem(label: String, isChecked: Boolean, onCheckedChange: (Boolean) -
 @Composable
 fun DetalleCitaScreenPreview() {
     NttDataTheme {
-        DetalleCitaScreen(
-            cita = CitaData(
-                fecha = "14/02/2026",
-                detalle = "Reserva de Puesto 12 - Oficina Central",
-                iconUrl = "",
-                isConfirmed = false
-            ),
-            onBack = {}
-        )
+
     }
 }

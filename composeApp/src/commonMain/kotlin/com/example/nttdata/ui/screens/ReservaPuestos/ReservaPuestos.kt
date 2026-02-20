@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.nttdata.ui.screens.CitasViewModel
+import com.example.nttdata.ui.screens.pantallainicio.CitasViewModel
 import com.example.nttdata.ui.screens.OficinaSelection.OficinaViewModel
 import com.example.nttdata.ui.screens.OficinaSelection.OficinaSelector
 import com.example.nttdata.ui.components.OfficeMapRenderer
@@ -41,7 +41,7 @@ import com.example.nttdata.ui.components.BarraInferiorComun
 import com.example.nttdata.ui.components.rememberDateTimeSelectionState
 import com.example.nttdata.ui.components.DateTimeSelectors
 import com.example.nttdata.ui.components.DateTimeSelectionDialogs
-import com.example.nttdata.domain.model.CitaData
+import com.example.nttdata.domain.model.Cita
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -184,14 +184,15 @@ fun ReservaPuestos(
                 Button(
                     onClick = {
                         if (isEnabled) {
-                            viewModel.anadirCita(
-                                CitaData(
-                                    fecha = dateTimeState.selectedDate,
-                                    detalle = "Oficina $selectedOfficeName\nPuesto: $selectedChairId\nHorario: ${dateTimeState.selectedTimeInicio} - ${dateTimeState.selectedTimeFin}",
-                                    iconUrl = "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/06qx6vzm_expires_30_days.png",
-                                    targetQr = selectedChairId!!
-                                )
+                            val nuevaCita = Cita(
+                                id = "",
+                                fecha = dateTimeState.selectedDate,
+                                horaInicio = dateTimeState.selectedTimeInicio,
+                                horaFin = dateTimeState.selectedTimeFin,
+                                recursoId = selectedChairId!!,
+                                isConfirmado = false
                             )
+                            viewModel.anadirCita(nuevaCita)
                             onBack()
                         }
                     },
@@ -222,15 +223,5 @@ fun ReservaPuestos(
         }
         // Usamos el componente compartido para los diálogos
         DateTimeSelectionDialogs(state = dateTimeState)
-    }
-}
-
-@Preview
-@Composable
-fun ReservaPuestosPreview() {
-    com.example.nttdata.ui.theme.NttDataTheme {
-        ReservaPuestos(
-            viewModel = CitasViewModel()
-        )
     }
 }

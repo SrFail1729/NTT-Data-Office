@@ -6,16 +6,16 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 // import com.example.nttdata.data.dto.request.LoginRequestDTO // Removed unused import? No, it's used.
-import com.example.nttdata.data.dto.request.LoginRequestDTO
 import com.example.nttdata.data.local.SecurePreferences
-import com.example.nttdata.data.repository.AuthRepository
+import com.example.nttdata.data.repository.AuthRepositoryImpl
+import com.example.nttdata.di.DataGraph
 import com.example.nttdata.domain.model.UserRole
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val securePreferences: SecurePreferences
 ) : ViewModel() {
-    private val authRepository: AuthRepository = AuthRepository()
+    private val authRepository: AuthRepositoryImpl = DataGraph.authRepository as AuthRepositoryImpl
 
     var username by mutableStateOf("")
     var password by mutableStateOf("")
@@ -41,10 +41,8 @@ class LoginViewModel(
         viewModelScope.launch {
             println("LoginViewModel: Iniciando login...")
             val result = authRepository.login(
-                LoginRequestDTO(
-                    correo = username,
-                    contrasena = password
-                )
+                correo = username,
+                password
             )
             println("LoginViewModel: Resultado recibido: $result")
 

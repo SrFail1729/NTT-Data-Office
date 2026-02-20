@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.nttdata.ui.screens.CitasViewModel
+import com.example.nttdata.ui.screens.pantallainicio.CitasViewModel
 import com.example.nttdata.ui.screens.OficinaSelection.OficinaViewModel
 import com.example.nttdata.ui.screens.OficinaSelection.OficinaSelector
 import com.example.nttdata.ui.components.OfficeMapRenderer
@@ -37,7 +37,7 @@ import com.example.nttdata.ui.components.BarraInferiorComun
 import com.example.nttdata.ui.components.rememberDateTimeSelectionState
 import com.example.nttdata.ui.components.DateTimeSelectors
 import com.example.nttdata.ui.components.DateTimeSelectionDialogs
-import com.example.nttdata.domain.model.CitaData
+import com.example.nttdata.domain.model.Cita
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -134,9 +134,14 @@ fun ReservaSalas(
                     onClick = {
                         if (dateTimeState.dateMillis != null && selectedChairId != null) {
                             viewModel.anadirCita(
-                                CitaData(
+                                Cita(
+                                    id = "",
                                     fecha = dateTimeState.selectedDate,
-                                    detalle = "Sala: $selectedOfficeName\nPuesto: $selectedChairId\nRunning Time: ${dateTimeState.selectedTimeInicio} - ${dateTimeState.selectedTimeFin}",
+                                    horaInicio = dateTimeState.selectedTimeInicio,
+                                    horaFin = dateTimeState.selectedTimeFin,
+                                    recursoId = selectedChairId!!,
+                                    isConfirmado = false,
+                                    detalle = "Sala: $selectedOfficeName\nPuesto: $selectedChairId\nHorario: ${dateTimeState.selectedTimeInicio} - ${dateTimeState.selectedTimeFin}",
                                     iconUrl = "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/XBgefxxgLz/06qx6vzm_expires_30_days.png",
                                     targetQr = selectedChairId!!
                                 )
@@ -167,14 +172,4 @@ fun ReservaSalas(
     }
     // Usamos el componente compartido para los diálogos
     DateTimeSelectionDialogs(state = dateTimeState)
-}
-
-@Preview
-@Composable
-fun ReservaSalasPreview() {
-    com.example.nttdata.ui.theme.NttDataTheme {
-        ReservaSalas(
-            viewModel = CitasViewModel()
-        )
-    }
 }

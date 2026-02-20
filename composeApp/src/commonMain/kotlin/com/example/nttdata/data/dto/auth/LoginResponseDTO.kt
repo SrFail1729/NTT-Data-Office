@@ -1,4 +1,4 @@
-package com.example.nttdata.data.dto.response
+package com.example.nttdata.data.dto.auth
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
